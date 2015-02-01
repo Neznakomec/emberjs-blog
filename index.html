@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Ember Starter Kit</title>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<script type="text/x-handlebars">
+    <h2>Welcome to Ember.js</h2>
+
+    {{outlet}}
+</script>
+
+<script type="text/x-handlebars" id="index">
+    {{#link-to 'sessions.new'}}Link{{/link-to}}
+</script>
+
+<script type="text/x-handlebars" id="sessions/new">
+    <form>
+        <label for="loginOrEmail">Login or Email</label>
+        {{view Ember.TextField valueBinding="loginOrEmail" placeholder="Login or Email"}}
+        <label for="password">Password</label>
+        {{view Ember.TextField valueBinding="password" placeholder="Password"}}
+        <button {{action 'createSession'}}>Login</button>
+    </form>
+</script>
+
+<script src="js/libs/jquery-1.10.2.js"></script>
+<script src="js/libs/handlebars-v2.0.0.js"></script>
+<script src="js/libs/ember-1.9.1.js"></script>
+<script src="js/libs/ember-data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
