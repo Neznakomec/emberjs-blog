@@ -1,6 +1,24 @@
 /**
  * Created by Ershov on 23.01.2015.
  */
+
+var server = require("./server");
+var router = require("./router");
+var requestHandlers = require("./requestHandlers");
+
+var handle = {};
+// handle["/"] = requestHandlers.start;
+handle["/start"] = requestHandlers.start;
+handle["/upload"] = requestHandlers.upload;
+handle["/show"] = requestHandlers.show;
+
+handle["/session"] = requestHandlers.session;
+handle["/articles"] = requestHandlers.articles;
+handle["defaultFileHandler"] = requestHandlers.returnFile;
+
+handle["/auth.json"] = requestHandlers.checkToken;
+server.start(router.route, handle);
+/*
 var http = require('http');
 var fs = require('fs');
 var qs = require('querystring');
@@ -38,7 +56,6 @@ http.createServer(function (req, res) {
             });
         }
 
-
     } else {
         if (req.url == '/') req.url = 'index.html';
         else req.url = '.' + req.url;
@@ -54,3 +71,4 @@ http.createServer(function (req, res) {
         });
     }
 }).listen(3000);
+    */

@@ -8,23 +8,40 @@
 </head>
 <body>
 <script type="text/x-handlebars">
-    <h2>Welcome to Ember.js</h2>
+    <div class="container">
+        <div class="navbar">
+            <div class="navbar-inner">
+                <a class="brand" href="#">My blog</a>
+                <ul class="nav pull-right">
+                    <li>{{#link-to 'securePage'}}After Login{{/link-to}}</li>
+                    <li>{{#link-to 'sessions.new'}}Login{{/link-to}}</li>
+                </ul>
+            </div>
+        </div>
 
-    {{outlet}}
+        {{outlet}}
+    </div>
 </script>
 
 <script type="text/x-handlebars" id="index">
-    {{#link-to 'sessions.new'}}Link{{/link-to}}
+    <h1>Welcome to my blog</h1>
 </script>
 
 <script type="text/x-handlebars" id="sessions/new">
-    <form>
+    <form {{action 'createSession' on='submit'}}>
         <label for="loginOrEmail">Login or Email</label>
         {{view Ember.TextField valueBinding="loginOrEmail" placeholder="Login or Email"}}
         <label for="password">Password</label>
         {{view Ember.TextField valueBinding="password" placeholder="Password"}}
-        <button {{action 'createSession'}}>Login</button>
+        <button >Login</button>
+    {{#if errorMessage}}
+    <div>{{errorMessage}}</div>
+    {{/if}}
     </form>
+</script>
+
+<script type="text/x-handlebars" id="securePage">
+    <h1>Secure page route</h1>
 </script>
 
 <script src="js/libs/jquery-1.10.2.js"></script>
