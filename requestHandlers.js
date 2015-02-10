@@ -2,7 +2,10 @@
  * Created by Ershov on 01.02.2015.
  */
 var querystring = require("querystring"),
-    fs = require("fs");
+    fs = require("fs"),
+    md5 = require('MD5'),
+    url = require("url");
+
 
 var ARTICLES = [
     {
@@ -48,8 +51,12 @@ function start(response, postData) {
 }
 
 function articles(response, postData) {
-    response.write(ARTICLES);
+
+    if (checkToken(response, postData))
+    {
+    response.write(JSON.stringify(ARTICLES));
     response.end();
+    }
 }
 
 function upload(response, postData) {
@@ -81,26 +88,44 @@ function show(response, postData) {
 
 function retrieveTokenForUsername(username) {
     if (username=='ember')
-        return 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    else return 'gfjgjdfgjij';
+    {
+        md5('casts');
+    }
+    else return null;
 }
 
 function checkToken(response, postData)
 {
-    var POST = querystring.parse(postData);
+    // return true;
+    var request = response.request_field;
 
-    var username = POST.username;
-    var password = POST.password;
+    var query = url.parse(request.url).query;
+    var token = querystring.parse(query);
+    var userToken = token.token;
 
-    // Check POST, GET, and headers for supplied token.
-
-    if (retrieveTokenForUsername(username) != password) {
-        res.send(401, { error: 'Invalid token. You provided: ' + userToken });
+    var username;
+    if (request.params)
+    {
+        username = request.params('account_id');
+    }
+    else
+    {
+        username = 'ember';
+    }
+    if (retrieveTokenForUsername(username) == userToken)
+    {
+        return true;
+    }
+    else
+    {
+        response.statusCode = 401;
+        response.setHeader('Content-type', 'application/json');
+        response.write(JSON.stringify({ error: 'Invalid token. You provided: ' + userToken }));
+        response.end();
         return false;
     }
-
-    return true;
 }
+
 
 function session(response, postData) {
     // creating a session
@@ -112,16 +137,17 @@ function session(response, postData) {
 
     if (username == 'ember' && password == 'casts') {
         // Generate and save the token (forgotten upon server restart).
-        var currentToken = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var passwordToken = md5(password);
 
         var POST_RESPONSE = {
             session: {
-                auth_token: currentToken,
+                auth_token: passwordToken,
                 account_id: username,
                 success: true
             }
         }
 
+        console.log('for user ' + username + ' sent token '+passwordToken);
         response.end(JSON.stringify(POST_RESPONSE));
         }
     else {

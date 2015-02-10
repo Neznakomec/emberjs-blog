@@ -47,13 +47,13 @@
       ```
 
       The `DS.InvalidError` must be constructed with a single object whose
-      keys are the invalid model properties, and whose values are the
-      corresponding error messages. For example:
+      keys are the invalid model properties, and whose values contain
+      arrays of the corresponding error messages. For example:
 
       ```javascript
       return new DS.InvalidError({
-        length: 'Must be less than 15',
-        name: 'Must not be blank'
+        length: ['Must be less than 15'],
+        name: ['Must not be blank']
       });
       ```
 
@@ -1195,8 +1195,15 @@
         var url = [];
 
         if (path) {
+          // Protocol relative url
+          //jscs:disable disallowEmptyBlocks
+          if (/^\/\//.test(path)) {
+            // Do nothing, the full host is already included. This branch
+            // avoids the absolute path logic and the relative path logic.
+
           // Absolute path
-          if (path.charAt(0) === '/') {
+          } else if (path.charAt(0) === '/') {
+            //jscs:enable disallowEmptyBlocks
             if (host) {
               path = path.slice(1);
               url.push(host);
@@ -1505,7 +1512,6 @@
         return string.endsWith(suffix);
       }
     }
-
     var ember$inflector$lib$system$inflector$$capitalize = Ember.String.capitalize;
 
     var ember$inflector$lib$system$inflector$$BLANK_REGEX = /^\s*$/;
@@ -2800,17 +2806,20 @@
         This method delegates to a more specific extract method based on
         the `requestType`.
 
-        Example
+        To override this method with a custom one, make sure to call
+        `this._super(store, type, payload, id, requestType)` with your
+        pre-processed data.
+
+        Here's an example of using `extract` manually:
 
         ```javascript
-        var get = Ember.get;
         socket.on('message', function(message) {
-          var modelName = message.model;
           var data = message.data;
-          var type = store.modelFor(modelName);
+          var type = store.modelFor(message.modelName);
           var serializer = store.serializerFor(type.typeKey);
-          var record = serializer.extract(store, type, data, get(data, 'id'), 'single');
-          store.push(modelName, record);
+          var record = serializer.extract(store, type, data, data.id, 'single');
+
+          store.push(message.modelName, record);
         });
         ```
 
@@ -4644,7 +4653,7 @@
         this._unregisterFromManager();
         this._dissociateFromOwnRecords();
         ember$data$lib$system$record_arrays$record_array$$set(this, 'content', undefined);
-        this._super();
+        this._super.apply(this, arguments);
       }
     });
 
@@ -5186,7 +5195,7 @@
       },
 
       willDestroy: function() {
-        this._super();
+        this._super.apply(this, arguments);
 
         this.filteredRecordArrays.forEach(function(value) {
           ember$data$lib$system$record_array_manager$$forEach(ember$data$lib$system$record_array_manager$$flatten(value), ember$data$lib$system$record_array_manager$$destroy);
@@ -5999,7 +6008,7 @@
         record. This is useful for displaying all errors to the user.
 
         ```handlebars
-        {{#each message in errors.messages}}
+        {{#each message in model.errors.messages}}
           <div class="error">
             {{message}}
           </div>
@@ -6414,7 +6423,7 @@
       },
 
       updateLink: function(link) {
-        Ember.warn("You have pushed a record of type '" + this.record.constructor.typeKey + "' with '" + this.key + "' as a link, but the association is not an aysnc relationship.", this.isAsync);
+        Ember.warn("You have pushed a record of type '" + this.record.constructor.typeKey + "' with '" + this.key + "' as a link, but the association is not an async relationship.", this.isAsync);
         Ember.assert("You have pushed a record of type '" + this.record.constructor.typeKey + "' with '" + this.key + "' as a link, but the value of that link is not a string.", typeof link === 'string' || link === null);
         if (link !== this.link) {
           this.link = link;
@@ -7275,7 +7284,7 @@
       _data: null,
 
       init: function() {
-        this._super();
+        this._super.apply(this, arguments);
         this._setup();
       },
 
@@ -7948,7 +7957,7 @@
       },
 
       willDestroy: function() {
-        this._super();
+        this._super.apply(this, arguments);
         this.clearRelationships();
       },
 
@@ -8353,7 +8362,7 @@
       Define your application's store like this:
 
       ```javascript
-      MyApp.Store = DS.Store.extend();
+      MyApp.ApplicationStore = DS.Store.extend();
       ```
 
       Most Ember.js applications will only have a single `DS.Store` that is
@@ -8529,7 +8538,7 @@
         // to avoid conflicts.
 
         if (ember$data$lib$system$store$$isNone(properties.id)) {
-          properties.id = this._generateId(type);
+          properties.id = this._generateId(type, properties);
         }
 
         // Coerce ID to a string
@@ -8554,13 +8563,14 @@
         @method _generateId
         @private
         @param {String} type
+        @param {Object} properties from the new record
         @return {String} if the adapter can generate one, an ID
       */
-      _generateId: function(type) {
+      _generateId: function(type, properties) {
         var adapter = this.adapterFor(type);
 
         if (adapter && adapter.generateIdForRecord) {
-          return adapter.generateIdForRecord(this);
+          return adapter.generateIdForRecord(this, type, properties);
         }
 
         return null;
@@ -8680,9 +8690,37 @@
         store.find('person', { page: 1 });
         ```
 
-        This will ask the adapter's `findQuery` method to find the records for
-        the query, and return a promise that will be resolved once the server
-        responds.
+        By passing an object `{page: 1}` as an argument to the find method, it
+        delegates to the adapter's findQuery method. The adapter then makes
+        a call to the server, transforming the object `{page: 1}` as parameters
+        that are sent along, and will return a RecordArray when the promise
+        resolves.
+
+        Exposing queries this way seems preferable to creating an abstract query
+        language for all server-side queries, and then require all adapters to
+        implement them.
+
+        The call made to the server, using a Rails backend, will look something like this:
+
+        ```
+        Started GET "/api/v1/person?page=1"
+        Processing by Api::V1::PersonsController#index as HTML
+        Parameters: {"page"=>"1"}
+        ```
+
+        If you do something like this:
+
+        ```javascript
+        store.find('person', {ids: [1, 2, 3]});
+        ```
+
+        The call to the server, using a Rails backend, will look something like this:
+
+        ```
+        Started GET "/api/v1/person?ids%5B%5D=1&ids%5B%5D=2&ids%5B%5D=3"
+        Processing by Api::V1::PersonsController#index as HTML
+        Parameters: {"ids"=>["1", "2", "3"]}
+        ```
 
         @method find
         @param {String or subclass of DS.Model} type
@@ -9646,10 +9684,10 @@
         if (Ember.ENV.DS_WARN_ON_UNKNOWN_KEYS) {
           Ember.warn("The payload for '" + type.typeKey + "' contains these unknown keys: " +
             Ember.inspect(filter(Ember.keys(data), function(key) {
-              return !(key === 'id' || key === 'links' || ember$data$lib$system$store$$get(type, 'fields').has(key) || key.match(/Type$/));
+              return !(key === 'id' || key === 'links' || ember$data$lib$system$store$$get(type, 'fields').has(key) || key.match(/Type$/));
             })) + ". Make sure they've been defined in your model.",
             filter(Ember.keys(data), function(key) {
-              return !(key === 'id' || key === 'links' || ember$data$lib$system$store$$get(type, 'fields').has(key) || key.match(/Type$/));
+              return !(key === 'id' || key === 'links' || ember$data$lib$system$store$$get(type, 'fields').has(key) || key.match(/Type$/));
             }).length === 0
           );
         }
@@ -11355,7 +11393,7 @@
         type = undefined;
       }
 
-      Ember.assert("The first argument to DS.belongsTo must be a string representing a model type key, not an instance of " + Ember.inspect(type) + ". E.g., to define a relation to the Person model, use DS.belongsTo('person')", typeof type === 'string' || typeof type === 'undefined');
+      Ember.assert("The first argument to DS.belongsTo must be a string representing a model type key, not an instance of " + Ember.inspect(type) + ". E.g., to define a relation to the Person model, use DS.belongsTo('person')", typeof type === 'string' || typeof type === 'undefined');
 
       options = options || {};
 
@@ -11493,7 +11531,7 @@
         type = undefined;
       }
 
-      Ember.assert("The first argument to DS.hasMany must be a string representing a model type key, not an instance of " + Ember.inspect(type) + ". E.g., to define a relation to the Comment model, use DS.hasMany('comment')", typeof type === 'string' || typeof type === 'undefined');
+      Ember.assert("The first argument to DS.hasMany must be a string representing a model type key, not an instance of " + Ember.inspect(type) + ". E.g., to define a relation to the Comment model, use DS.hasMany('comment')", typeof type === 'string' || typeof type === 'undefined');
 
       options = options || {};
 
@@ -12106,6 +12144,47 @@
         Given a callback, iterates over each of the relationships in the model,
         invoking the callback with the name of each relationship and its relationship
         descriptor.
+
+
+        The callback method you provide should have the following signature (all
+        parameters are optional):
+
+        ```javascript
+        function(name, descriptor);
+        ```
+
+        - `name` the name of the current property in the iteration
+        - `descriptor` the meta object that describes this relationship
+
+        The relationship descriptor argument is an object with the following properties.
+
+       - **key** <span class="type">String</span> the name of this relationship on the Model
+       - **kind** <span class="type">String</span> "hasMany" or "belongsTo"
+       - **options** <span class="type">Object</span> the original options hash passed when the relationship was declared
+       - **parentType** <span class="type">DS.Model</span> the type of the Model that owns this relationship
+       - **type** <span class="type">DS.Model</span> the type of the related Model
+
+        Note that in addition to a callback, you can also pass an optional target
+        object that will be set as `this` on the context.
+
+        Example
+
+        ```javascript
+        App.ApplicationSerializer = DS.JSONSerializer.extend({
+          serialize: function(record, options) {
+            var json = {};
+
+            record.eachRelationship(function(name, descriptor) {
+              if (descriptor.kind === 'hasMany') {
+                var serializedHasManyName = name.toUpperCase() + '_IDS';
+                json[name.toUpperCase()] = record.get(name).mapBy('id');
+              }
+            });
+
+            return json;
+          }
+        });
+        ```
 
         @method eachRelationship
         @param {Function} callback the callback to invoke

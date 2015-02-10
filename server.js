@@ -27,6 +27,7 @@ function start(route, handle) {
         });
 
         request.addListener("end", function() {
+            response.request_field = request;
             route(handle, pathname, response, postData);
         });
 

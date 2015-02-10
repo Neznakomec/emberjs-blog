@@ -42,6 +42,14 @@
 
 <script type="text/x-handlebars" id="securePage">
     <h1>Secure page route</h1>
+
+    {{#each model}}
+    <article>
+        <h3>{{title}}</h3>
+        <p>Posted by {{author}}</p>
+        <p>{{body}}</p>
+    </article>
+    {{/each}}
 </script>
 
 <script src="js/libs/jquery-1.10.2.js"></script>

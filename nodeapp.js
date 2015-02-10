@@ -16,7 +16,7 @@ handle["/session"] = requestHandlers.session;
 handle["/articles"] = requestHandlers.articles;
 handle["defaultFileHandler"] = requestHandlers.returnFile;
 
-handle["/auth.json"] = requestHandlers.checkToken;
+handle["/securepage.json"] = requestHandlers.articles;
 server.start(router.route, handle);
 /*
 var http = require('http');

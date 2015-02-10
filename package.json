@@ -1,0 +1,11 @@
+{
+  "name": "embercast-auth-server",
+  "description": "Simple server used in the Authentication Embercast",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "MD5": "*"
+  },
+  "devDependencies": {
+  }
+}
