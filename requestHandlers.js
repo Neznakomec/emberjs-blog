@@ -86,33 +86,38 @@ function show(response, postData) {
     });
 }
 
-function retrieveTokenForUsername(username) {
+function getTokenForUsername(username) {
     if (username=='ember')
     {
-        md5('casts');
+        return md5('casts');
     }
     else return null;
 }
 
+function getUserId(username)
+{
+    if (username=='ember')
+    {
+        return 1;
+    }
+}
+
+function getTokenForUserId(uid)
+{
+    if (uid == 1)
+    return getTokenForUsername('ember');
+}
+
 function checkToken(response, postData)
 {
-    // return true;
     var request = response.request_field;
 
     var query = url.parse(request.url).query;
-    var token = querystring.parse(query);
-    var userToken = token.token;
+    var sessionIds = querystring.parse(query);
+    var userToken = sessionIds.token;
+    var userId = sessionIds.uid;
 
-    var username;
-    if (request.params)
-    {
-        username = request.params('account_id');
-    }
-    else
-    {
-        username = 'ember';
-    }
-    if (retrieveTokenForUsername(username) == userToken)
+    if (getTokenForUserId(userId) == userToken)
     {
         return true;
     }
@@ -137,12 +142,13 @@ function session(response, postData) {
 
     if (username == 'ember' && password == 'casts') {
         // Generate and save the token (forgotten upon server restart).
-        var passwordToken = md5(password);
+        var passwordToken = getTokenForUsername(username);
+        var userId = getUserId(username);
 
         var POST_RESPONSE = {
             session: {
                 auth_token: passwordToken,
-                account_id: username,
+                account_id: userId,
                 success: true
             }
         }

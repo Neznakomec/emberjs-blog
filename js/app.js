@@ -11,9 +11,9 @@ App.Router.map(function() {
 
 // SESSION CREATION ROUTE
 App.SessionsNewController = Ember.Controller.extend({
-    token: '',
-    account_id: '',
-    errorMessage: '',
+    //token: '',
+    //account_id: '',
+    //errorMessage: '',
     reset: function(){
         this.setProperties({
             loginOrEmail: "",
@@ -42,11 +42,12 @@ App.SessionsNewRoute = Ember.Route.extend({
                     var data = JSON.parse(sourceData);
                     if (data.session.success)
                     {
-                        self.set('token', data.session.auth_token);
-                        self.set('account_id', data.session.account_id);
+                        alert('login succeeded');
+                        self.controller.set('token', data.session.auth_token);
+                        self.controller.set('account_id', data.session.account_id);
                         localStorage["token"] = data.session.auth_token;
                         localStorage["account_id"] = data.session.account_id;
-                        //router.transitionTo('index');
+                        self.transitionTo('securePage');
                     }
                     else
                     {
@@ -55,10 +56,6 @@ App.SessionsNewRoute = Ember.Route.extend({
                     }
                 });
             }
-
-            // store to cookie
-            $.cookie('auth_token', data.session.auth_token);
-            $.cookie('auth_account', data.session.account_id);
         }
     }
 });
@@ -70,6 +67,9 @@ App.AuthenticatedRoute = Ember.Route.extend({
 
 App.SecurePageRoute = App.AuthenticatedRoute.extend({
     model: function() {
-        return $.getJSON('/securepage.json', {token: '123456'});
+        var controller = this.controllerFor('sessions.new');
+        var token = this.controllerFor('sessions.new').get('token');
+        var userId = this.controllerFor('sessions.new').get('account_id');
+        return $.getJSON('/securepage.json', {token: token, uid: userId});
     }
 });
