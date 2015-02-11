@@ -37,7 +37,7 @@ App.SessionsNewController = Ember.Controller.extend({
     tokenChanged: function () {
         localStorage["token"] = this.get('token');
         localStorage["account_id"] = this.get('account_id');
-    }.observes('token'),
+    }.observes('token', 'account_id'),
 
 
     reset: function(){
@@ -61,7 +61,6 @@ App.SessionsNewRoute = Ember.Route.extend({
     controller.reset();
     },
 
-
     actions: {
         createSession: function() {
             var self = this;
@@ -82,7 +81,15 @@ App.SessionsNewRoute = Ember.Route.extend({
                         self.controller.set('account_id', data.session.account_id);
                         //localStorage["token"] = data.session.auth_token;
                         //localStorage["account_id"] = data.session.account_id;
-                        self.transitionTo('securePage');
+                        var attemptedTransition = self.controller.get('attemptedTransition');
+                        if (attemptedTransition)
+                        {
+                            attemptedTransition.retry();
+                            self.controller.set('attemptedTransition', null);
+                        }
+                        else {
+                            self.transitionTo('index');
+                        }
                     }
                     else
                     {
@@ -114,6 +121,7 @@ App.AuthenticatedRoute = Ember.Route.extend({
 
         var loginController = this.controllerFor('sessions.new');
         loginController.set('attemptedTransition', transition);
+        var tr = loginController.get('attemptedTransition');
         this.transitionTo('sessions.new');
     }
 });
