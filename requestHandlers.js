@@ -117,7 +117,8 @@ function checkToken(response, postData)
     var userToken = sessionIds.token;
     var userId = sessionIds.uid;
 
-    if (getTokenForUserId(userId) == userToken)
+    if (userToken != undefined && userId != undefined &&
+        getTokenForUserId(userId) == userToken)
     {
         return true;
     }
