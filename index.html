@@ -14,7 +14,7 @@
                 <a class="brand" href="#">My blog</a>
                 <ul class="nav pull-right">
                     <li>{{#link-to 'articles'}}Blog Articles{{/link-to}}</li>
-                    <li>{{#link-to 'session.new'}}Login{{/link-to}}</li>
+                    <li>{{#link-to 'session.new'}}Login{{/link-to}} {{#link-to 'register'}}Register{{/link-to}}</li>
                     <li>{{#link-to 'logout'}}Logout{{/link-to}}</li>
                 </ul>
             </div>
@@ -42,6 +42,26 @@
     {{#if errorMessage}}
     <div>{{errorMessage}}</div>
     {{/if}}
+    </form>
+</script>
+
+<script type="text/x-handlebars" id="register">
+    <form {{action 'register' on='submit'}}>
+        <p>
+            <label for="loginOrEmail">Login or Email</label>
+            {{view Ember.TextField valueBinding="loginOrEmail" placeholder="Please enter your login"}}
+            <button {{action 'checkLogin' on='click'}}>Check login</button>
+        </p>
+        <p>
+            <label for="password">Password</label>
+            {{view Ember.TextField valueBinding="password" placeholder="Password"}}
+        </p>
+    {{#if errorMessage}}
+    <div><font color="red"> {{errorMessage}}</font></div>
+    {{else}}
+    <div><font color="green">{{notifyMessage}}</font></div>
+    {{/if}}
+        <button >Register</button>
     </form>
 </script>
 

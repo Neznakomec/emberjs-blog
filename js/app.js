@@ -6,6 +6,7 @@ App.Router.map(function() {
         this.route('new', {path: '/new'});
     });
     this.route('articles', {path: '/articles'});
+    this.route('register', {path: '/register'});
     this.route('logout', {path: '/logout'});
 });
 
@@ -137,4 +138,41 @@ App.ArticlesRoute = App.AuthenticatedRoute.extend({
         // return this.getJSONWithToken('/articles.json');
         return this.postJSONWithToken('/articles.json');
     }
+});
+
+// Register route
+
+App.RegisterController = Ember.Controller.extend({
+    errorMessage: '',
+    notifyMessage: '',
+    a : 0,
+    actions:
+    {
+        register: function()
+        {
+            alert('registration');
+        },
+
+        checkLogin: function()
+        {
+            var a = this.get('a');
+            if (a == 0)
+            {
+                this.set('errorMessage', 'waka a=' + this.get('a'));
+                this.set('notifyMessage', '');
+            }
+
+            if (a == 1)
+            {
+                this.set('errorMessage', '');
+                this.set('notifyMessage', 'stack a=' + this.get('a'));
+            }
+
+            this.set('a', 1 - a);
+        }
+    }
+});
+
+App.RegisterRoute = Ember.Route.extend({
+
 });
