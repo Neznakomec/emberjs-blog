@@ -13,8 +13,8 @@
             <div class="navbar-inner">
                 <a class="brand" href="#">My blog</a>
                 <ul class="nav pull-right">
-                    <li>{{#link-to 'securePage'}}After Login{{/link-to}}</li>
-                    <li>{{#link-to 'sessions.new'}}Login{{/link-to}}</li>
+                    <li>{{#link-to 'articles'}}Blog Articles{{/link-to}}</li>
+                    <li>{{#link-to 'session.new'}}Login{{/link-to}}</li>
                     <li>{{#link-to 'logout'}}Logout{{/link-to}}</li>
                 </ul>
             </div>
@@ -32,7 +32,7 @@
     <h2>{{logoutMessage}}</h2>
 </script>
 
-<script type="text/x-handlebars" id="sessions/new">
+<script type="text/x-handlebars" id="session/new">
     <form {{action 'createSession' on='submit'}}>
         <label for="loginOrEmail">Login or Email</label>
         {{view Ember.TextField valueBinding="loginOrEmail" placeholder="Login or Email"}}
@@ -45,8 +45,8 @@
     </form>
 </script>
 
-<script type="text/x-handlebars" id="securePage">
-    <h1>Secure page route</h1>
+<script type="text/x-handlebars" id="articles">
+    <h1>Recent articles</h1>
 
     {{#each model}}
     <article>

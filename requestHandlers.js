@@ -51,12 +51,15 @@ function start(response, postData) {
 }
 
 function articles(response, postData) {
+    var checkingToken = checkToken(response, postData);
 
-    if (checkToken(response, postData))
-    {
-    response.write(JSON.stringify(ARTICLES));
-    response.end();
-    }
+    checkingToken.then(function (result) {
+        if (result == true)
+        {
+            response.write(JSON.stringify(ARTICLES));
+            response.end();
+        }
+    }, null);
 }
 
 function upload(response, postData) {
@@ -86,52 +89,135 @@ function show(response, postData) {
     });
 }
 
+
+//var mongoose = require('dblibs/mongoose');
+var User = require('models/user').User;
+
+exports.test = test;
+
+function test(response, postData)
+ {
+    return new Promise(function(resolve, reject) {
+// здесь вытворяй что угодно, если хочешь асинхронно, потом…
+        User.findOne({username: username}, '-_id username hashedPassword', function(err, results)
+        {
+            if(err) {
+                reject (err);
+            } else {
+                resolve(results.hashedPassword);
+            }
+        });
+    });
+}
+
 function getTokenForUsername(username) {
-    if (username=='ember')
-    {
-        return md5('casts');
-    }
-    else return null;
+    return new Promise(function(resolve, reject) {
+// здесь вытворяй что угодно, если хочешь асинхронно, потом…
+        User.findOne({username: username}, '-_id hashedPassword', function(err, results)
+        {
+            if(err) {
+                reject (err);
+            } else {
+                if (!results)
+                    resolve(null);
+                else resolve(results.hashedPassword);
+            }
+        });
+    });
 }
 
 function getUserId(username)
 {
-    if (username=='ember')
-    {
-        return 1;
-    }
+    return new Promise(function(resolve, reject) {
+// здесь вытворяй что угодно, если хочешь асинхронно, потом…
+        User.findOne({username: username}, '_id', function(err, results)
+        {
+            if(err) {
+                reject (err);
+            } else {
+                if (!results)
+                    resolve(null);
+                else resolve(results._id);
+            }
+        });
+    });
+}
+
+function getUser(username) {
+    return new Promise(function(resolve, reject) {
+// здесь вытворяй что угодно, если хочешь асинхронно, потом…
+        User.findOne({username: username}, '_id username hashedPassword', function(err, results)
+        {
+            if(err) {
+                reject (err);
+            } else {
+                if (results != null)
+                    resolve(results);
+                else resolve(null);
+            }
+        });
+    });
 }
 
 function getTokenForUserId(uid)
 {
-    if (uid == 1)
-    return getTokenForUsername('ember');
+    return new Promise(function(resolve, reject) {
+// здесь вытворяй что угодно, если хочешь асинхронно, потом…
+        User.findOne({_id: uid}, 'hashedPassword', function(err, results)
+        {
+            if(err) {
+                reject (err);
+            } else {
+                if (results != null)
+                    resolve(results.hashedPassword);
+                else (resolve(null));
+            }
+        });
+    });
 }
 
-function checkToken(response, postData)
-{
-    var request = response.request_field;
+function checkToken(response, postData) {
+    return new Promise(function (resolve, reject) {
+        var request = response.request_field;
 
-    var query = url.parse(request.url).query;
-    var sessionIds = querystring.parse(query);
-    var userToken = sessionIds.token;
-    var userId = sessionIds.uid;
+        var query, userToken, userId;
+        if (request.method == 'GET') {
+            var query = url.parse(request.url).query;
+            var sessionIds = querystring.parse(query);
+            userToken = sessionIds.token;
+            userId = sessionIds.uid;
+        }
+        else if (request.method == 'POST') {
+            var sessionIds = querystring.parse(postData);
+            userToken = sessionIds.token;
+            userId = sessionIds.account_id;
+        }
 
-    if (userToken != undefined && userId != undefined &&
-        getTokenForUserId(userId) == userToken)
-    {
-        return true;
-    }
-    else
-    {
-        response.statusCode = 401;
-        response.setHeader('Content-type', 'application/json');
-        response.write(JSON.stringify({ error: 'Invalid token. You provided: ' + userToken }));
-        response.end();
-        return false;
-    }
+        var gettingToken = getTokenForUserId(userId);
+        gettingToken.then(function (resultToken) {
+                if (!resultToken)
+                {
+                    response.statusCode = 401;
+                    response.setHeader('Content-type', 'application/json');
+                    response.write(JSON.stringify({error: 'Invalid user id. You provided: ' + userId}));
+                    response.end();
+                    resolve(false);
+                }
+
+                if (userToken && resultToken == userToken) {
+                    resolve(true);
+                }
+                else {
+                    response.statusCode = 401;
+                    response.setHeader('Content-type', 'application/json');
+                    response.write(JSON.stringify({error: 'Invalid token. You provided: ' + userToken}));
+                    response.end();
+                    resolve(false);
+                }
+            }
+            , null);
+    });
 }
-
 
 function session(response, postData) {
     // creating a session
@@ -141,34 +227,37 @@ function session(response, postData) {
     var username = POST["session[login_or_email]"],
         password = POST["session[password]"];
 
-    if (username == 'ember' && password == 'casts') {
-        // Generate and save the token (forgotten upon server restart).
-        var passwordToken = getTokenForUsername(username);
-        var userId = getUserId(username);
+    // Generate and save the token (forgotten upon server restart).
+    var userGetting = getUser(username);
+    userGetting.then(function(result){
+        var passwordToken = result.hashedPassword;
+        var userId = result._id;
 
-        var POST_RESPONSE = {
-            session: {
-                auth_token: passwordToken,
-                account_id: userId,
-                success: true
-            }
+        if (passwordToken == undefined || userId == undefined)
+        {
+            var  POST_RESPONSE = {
+                session: {
+                    success: false,
+                    message: 'Invalid username/password'
+                }
+            };
+
+            response.end(JSON.stringify(POST_RESPONSE));
         }
-
-        console.log('for user ' + username + ' sent token '+passwordToken);
-        response.end(JSON.stringify(POST_RESPONSE));
-        }
-    else {
-        var  POST_RESPONSE = {
-            session: {
-            success: false,
-            message: 'Invalid username/password'
+        else
+        {
+            var POST_RESPONSE = {
+                session: {
+                    auth_token: passwordToken,
+                    account_id: userId,
+                    success: true
+                }
             }
-        };
 
-        response.end(JSON.stringify(POST_RESPONSE));
-    }
-
-
+            console.log('for user ' + username + ' sent token '+passwordToken);
+            response.end(JSON.stringify(POST_RESPONSE));
+        }
+    }, null);
 }
 
 function returnFile(pathname, response, postData) {

@@ -33,8 +33,14 @@ function start(route, handle) {
 
     }
 
-    http.createServer(onRequest).listen(3000);
+    var server = http.createServer(onRequest).listen(3000);
     console.log("Server has started.");
+
+    process.on('SIGTERM', function () {
+        console.log("Closing");
+        var mongoose = require('dblibs/mongoose');
+        mongoose.disconnect();
+    });
 }
 
 exports.start = start;

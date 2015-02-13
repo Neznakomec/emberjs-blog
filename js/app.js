@@ -2,10 +2,10 @@ App = Ember.Application.create();
 
 App.Router.map(function() {
     // put your routes here
-    this.resource('sessions', {path: '/session'}, function () {
+    this.resource('session', {path: '/session'}, function () {
         this.route('new', {path: '/new'});
     });
-    this.route('securePage', {path: '/securepage'});
+    this.route('articles', {path: '/articles'});
     this.route('logout', {path: '/logout'});
 });
 
@@ -16,7 +16,7 @@ App.LogoutRoute = Ember.Route.extend({
             var self = this;
             //alert('logout fired');
             this.controller.set('logoutMessage', 'You have successfully logged out');
-            this.controllerFor('sessions.new').setProperties({token: '', account_id: ''});
+            this.controllerFor('session.new').setProperties({token: '', account_id: ''});
             localStorage.removeItem('token');
             localStorage.removeItem('account_id');
 
@@ -29,7 +29,7 @@ App.LogoutRoute = Ember.Route.extend({
 });
 
 // SESSION CREATION ROUTE
-App.SessionsNewController = Ember.Controller.extend({
+App.SessionNewController = Ember.Controller.extend({
     //errorMessage: '',
     token: localStorage["token"],
     account_id: localStorage["account_id"],
@@ -56,7 +56,7 @@ App.SessionsNewController = Ember.Controller.extend({
     }
 });
 
-App.SessionsNewRoute = Ember.Route.extend({
+App.SessionNewRoute = Ember.Route.extend({
     setupController: function(controller, model){
     controller.reset();
     },
@@ -105,13 +105,19 @@ App.SessionsNewRoute = Ember.Route.extend({
 // SESSION SUPPORT PART
 App.AuthenticatedRoute = Ember.Route.extend({
     getJSONWithToken: function (url) {
-        var token = this.controllerFor('sessions.new').get('token');
-        var userId = this.controllerFor('sessions.new').get('account_id');
+        var token = this.controllerFor('session.new').get('token');
+        var userId = this.controllerFor('session.new').get('account_id');
         return $.getJSON(url, {token: token, uid: userId});
     },
 
+    postJSONWithToken: function (url) {
+        var loginController = this.controllerFor('session.new');
+        var sessionProperties = loginController.getProperties('token', 'account_id');
+        return $.post(url, sessionProperties, null, 'json');
+    },
+
     beforeModel: function(transition) {
-        if (!this.controllerFor('sessions.new').get('token')) {
+        if (!this.controllerFor('session.new').get('token')) {
             this.redirectToLogin(transition);
         }
     },
@@ -119,15 +125,16 @@ App.AuthenticatedRoute = Ember.Route.extend({
     redirectToLogin: function(transition) {
         alert('You must log in!');
 
-        var loginController = this.controllerFor('sessions.new');
+        var loginController = this.controllerFor('session.new');
         loginController.set('attemptedTransition', transition);
         var tr = loginController.get('attemptedTransition');
-        this.transitionTo('sessions.new');
+        this.transitionTo('session.new');
     }
 });
 
-App.SecurePageRoute = App.AuthenticatedRoute.extend({
+App.ArticlesRoute = App.AuthenticatedRoute.extend({
     model: function() {
-        return this.getJSONWithToken('/securepage.json');
+        // return this.getJSONWithToken('/articles.json');
+        return this.postJSONWithToken('/articles.json');
     }
 });

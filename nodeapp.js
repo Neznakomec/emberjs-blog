@@ -16,7 +16,8 @@ handle["/session"] = requestHandlers.session;
 handle["/articles"] = requestHandlers.articles;
 handle["defaultFileHandler"] = requestHandlers.returnFile;
 
-handle["/securepage.json"] = requestHandlers.articles;
+handle["/articles.json"] = requestHandlers.articles;
+handle["/test"] = requestHandlers.test;
 server.start(router.route, handle);
 /*
 var http = require('http');
