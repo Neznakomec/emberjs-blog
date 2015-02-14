@@ -1,7 +1,6 @@
 /**
- * Created by Ershov on 12.02.2015.
+ * Created by Ershov on 14.02.2015.
  */
-
 var md5 = require('md5');
 
 var mongoose = require('dblibs/mongoose');
@@ -15,20 +14,25 @@ var schema = new Schema({
         type: Number,
         unique: true
     },
-    username: {
-        type: String,
-        unique: true,
-        required: true
-    },
-    hashedPassword: {
+    title: {
         type: String,
         required: true
     },
-    salt: {
+    author: {
+        name: {
+        type: String,
+        required: true
+        }
+    },
+    excerpt: {
         type: String,
         required: true
     },
-    created: {
+    body: {
+        type: String,
+        required: true
+    },
+    date: {
         type: Date,
         default: Date.now
     }
@@ -40,12 +44,12 @@ schema.methods.encryptPassword = function (password) {
 };
 
 schema.virtual('password')
-.set(function(password) {
+    .set(function(password) {
         this._plainPassword = password;
         this.salt = Math.random() + '';
         this.hashedPassword = this.encryptPassword(password);
     })
-.get(function() {
+    .get(function() {
         return this._plainPassword;
     });
 
@@ -54,25 +58,26 @@ schema.methods.checkPassword = function (password) {
 }
 
 
-exports.User = mongoose.model('User', schema);
-var User = exports.User;
+exports.Article = mongoose.model('Article', schema);
+var Article = exports.Article;
 
 // auto increment plugin
 //
-User.findOne().sort('-_id').exec(function(err, item) {
-    var nextUserNumber;
+Article.findOne().sort('-_id').exec(function(err, item) {
+    var nextArticleNumber;
     if (item == null) {
-        nextUserNumber = 1;
-    } else {
-        nextUserNumber = item._id + 1;
+        nextArticleNumber = 1;
+    }
+    else {
+        nextArticleNumber = item._id + 1;
     }
 
-    console.log('user create starting id at ' + nextUserNumber);
+    console.log('Article create starting id at ' + nextArticleNumber);
 
     schema.plugin(autoIncrement.plugin, {
-        model: 'User',
+        model: 'Article',
         field: '_id',
-        startAt: nextUserNumber,
+        startAt: nextArticleNumber,
         incrementBy: 1
     });
 

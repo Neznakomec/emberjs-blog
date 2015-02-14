@@ -235,8 +235,24 @@ App.RegisterRoute = Ember.Route.extend({
 App.IndexRoute = App.AuthenticatedRoute.extend({
     model: function () {
         return this.postJSONWithToken('/articles.json');
+        /*.done(function(data){
+            alert('response received');
+            alert(data);
+            console.log(data);
+            return data;
+        });*/
     },
     renderTemplate: function () {
         this.render('articles');
     }
+});
+
+var showdown = new Showdown.converter();
+
+Ember.Handlebars.helper('format-markdown', function(input) {
+    return new Handlebars.SafeString(showdown.makeHtml(input));
+});
+
+Ember.Handlebars.helper('format-date', function(date) {
+    return moment(date).fromNow();
 });

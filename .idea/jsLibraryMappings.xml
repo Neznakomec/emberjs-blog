@@ -4,7 +4,7 @@
     <file url="file://$PROJECT_DIR$" libraries="{nodeblog node_modules}" />
     <file url="file://$PROJECT_DIR$/createDb.js" libraries="{Node.js Globals, Node.js v0.12.0 Core Modules}" />
     <file url="file://$PROJECT_DIR$/dblibs" libraries="{Node.js Globals, Node.js v0.12.0 Core Modules}" />
-    <file url="file://$PROJECT_DIR$/js/app.js" libraries="{HTML, HTML5 / EcmaScript 5}" />
+    <file url="file://$PROJECT_DIR$/js/app.js" libraries="{HTML, HTML5 / EcmaScript 5, Meteor project library, Nashorn, nodeblog node_modules}" />
     <file url="file://$PROJECT_DIR$/models" libraries="{Node.js Globals, Node.js v0.12.0 Core Modules}" />
     <file url="file://$PROJECT_DIR$/nodeapp.js" libraries="{Node.js Globals, Node.js v0.12.0 Core Modules}" />
     <file url="file://$PROJECT_DIR$/requestHandlers.js" libraries="{Node.js Globals, Node.js v0.12.0 Core Modules}" />

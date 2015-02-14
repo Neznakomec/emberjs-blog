@@ -49,17 +49,24 @@ function start(response, postData) {
     response.write(body);
     response.end();
 }
+var Article = require('models/article').Article;
 
 function articles(response, postData) {
-    var checkingToken = checkToken(response, postData);
+    //var checkingToken = checkToken(response, postData);
 
-    checkingToken.then(function (result) {
+    Article.find({}).find(function (err, results) {
+        var stringa = JSON.stringify(results);
+        console.log(stringa);
+        response.write(JSON.stringify(results));
+        response.end();
+    });
+    /*checkingToken.then(function (result) {
         if (result == true)
         {
             response.write(JSON.stringify(ARTICLES));
             response.end();
         }
-    }, null);
+    }, null);*/
 }
 
 function upload(response, postData) {
