@@ -5,6 +5,8 @@
 var md5 = require('md5');
 
 var mongoose = require('dblibs/mongoose');
+var autoIncrement = require('mongoose-auto-increment');
+autoIncrement.initialize(mongoose);
 
 var Schema = mongoose.Schema;
 
@@ -51,6 +53,21 @@ schema.methods.checkPassword = function (password) {
     return this.encryptPassword(password) == this.hashedPassword;
 }
 
-exports.User = mongoose.model('User', schema);
 
-//user.set('password', '...');
+exports.User = mongoose.model('User', schema);
+var User = exports.User;
+
+// auto increment plugin
+//
+User.findOne().sort('-_id').exec(function(err, item) {
+    var nextUserNumber = item._id + 1;
+    console.log('user create starting id at ' + nextUserNumber);
+
+    schema.plugin(autoIncrement.plugin, {
+        model: 'User',
+        field: '_id',
+        startAt: nextUserNumber,
+        incrementBy: 1
+    });
+
+});

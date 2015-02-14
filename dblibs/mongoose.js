@@ -5,6 +5,6 @@
 var mongoose = require('mongoose');
 var config = require('./config');
 
-mongoose.connect(config.getConnectAddress());
+var connection = mongoose.connect(config.getConnectAddress());
 
 module.exports = mongoose;

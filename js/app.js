@@ -146,15 +146,68 @@ App.RegisterController = Ember.Controller.extend({
     errorMessage: '',
     notifyMessage: '',
     a : 0,
+    reset: function () {
+        this.setProperties({errorMessage: '', notifyMessage: ''});
+        this.setProperties({loginOrEmail: '', password: ''});
+    },
+
+    printError: function (message) {
+        this.setProperties({notifyMessage: '', errorMessage: message});
+    },
+    printNotify: function (message) {
+        this.setProperties({notifyMessage: message, errorMessage: ''});
+    },
+
     actions:
     {
         register: function()
         {
-            alert('registration');
+            var self = this;
+            var registrationData = this.getProperties('loginOrEmail', 'password');
+            if (!registrationData.loginOrEmail)
+            {
+                this.printError('Please enter user name');
+                return;
+            };
+            if (!registrationData.password)
+            {
+                this.printError('Please enter password');
+                return;
+            };
+            $.post('/register', registrationData, function (data) {
+                if (data.success) {
+                    self.printNotify(data.message);
+                }
+                else {
+                    self.printError(data.message);
+                }
+            }, 'json');
         },
 
         checkLogin: function()
         {
+            var self = this;
+            var login = this.get('loginOrEmail');
+            if (login)
+            {
+                var queryObject = {
+                    username: login
+                };
+
+                $.post('/checkLogin', queryObject, function (data) {
+                    if (data.success) {
+                        self.printError('Login is took by another user. Please choose another one');
+                    }
+                    else {
+                        self.printNotify('Login is free');
+                    }
+                }, 'json');
+            }
+            else
+            {
+                this.printError('login field is empty. please enter something');
+            }
+/*
             var a = this.get('a');
             if (a == 0)
             {
@@ -168,11 +221,22 @@ App.RegisterController = Ember.Controller.extend({
                 this.set('notifyMessage', 'stack a=' + this.get('a'));
             }
 
-            this.set('a', 1 - a);
+            this.set('a', 1 - a);*/
         }
     }
 });
 
 App.RegisterRoute = Ember.Route.extend({
+    setupController: function(controller, model){
+        controller.reset();
+    }
+});
 
+App.IndexRoute = App.AuthenticatedRoute.extend({
+    model: function () {
+        return this.postJSONWithToken('/articles.json');
+    },
+    renderTemplate: function () {
+        this.render('articles');
+    }
 });

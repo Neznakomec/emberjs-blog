@@ -93,23 +93,6 @@ function show(response, postData) {
 //var mongoose = require('dblibs/mongoose');
 var User = require('models/user').User;
 
-exports.test = test;
-
-function test(response, postData)
- {
-    return new Promise(function(resolve, reject) {
-// здесь вытворяй что угодно, если хочешь асинхронно, потом…
-        User.findOne({username: username}, '-_id username hashedPassword', function(err, results)
-        {
-            if(err) {
-                reject (err);
-            } else {
-                resolve(results.hashedPassword);
-            }
-        });
-    });
-}
-
 function getTokenForUsername(username) {
     return new Promise(function(resolve, reject) {
 // здесь вытворяй что угодно, если хочешь асинхронно, потом…
@@ -275,11 +258,104 @@ function returnFile(pathname, response, postData) {
         response.end(info);
     });
 }
+
+function checkLogin(response, postData)
+{
+    var Login = querystring.parse(postData);
+    var username = Login.username;
+
+    if (username)
+    {
+        User.findOne({username: username}, 'hashedPassword', function(err, results){
+            var POST_RESPONSE;
+
+            if (err) throw err;
+
+            if (results != null)
+            {
+                POST_RESPONSE = {
+                    success: true,
+                    message: "User exists"
+                }
+            } else {
+                POST_RESPONSE = {
+                    success: false,
+                    message: "User login is free"
+                }
+            }
+
+            response.statusCode = 200;
+            response.setHeader('Content-type', 'application/json');
+            response.write(JSON.stringify(POST_RESPONSE));
+            response.end();
+        });
+
+    }
+    else {
+        response.statusCode = 401;
+        response.setHeader('Content-type', 'application/json');
+        response.write(JSON.stringify({error: 'Invalid login for checking. You provided: ' + username}));
+        response.end();
+    }
+}
+
+
+function register(response, postData)
+{
+    var POST = querystring.parse(postData);
+
+    if (POST.loginOrEmail && POST.password)
+    {
+        var newUser = new User({username: POST.loginOrEmail, password: POST.password});
+
+
+        User.findOne({username: POST.loginOrEmail}, 'hashedPassword', function(err, results){
+            var POST_RESPONSE;
+
+            if (err) throw err;
+
+            if (results != null)
+            {
+                POST_RESPONSE = {
+                    success: false,
+                    message: "User exists"
+                }
+            } else {
+                POST_RESPONSE = {
+                    success: true,
+                    message: "User " + POST.loginOrEmail + " successfully registered!"
+                };
+
+                newUser.save(function (err, product, numberAffected) {
+                    if (err) throw err;
+                    console.log('registered new user:');
+                    console.log(product);
+                });
+            }
+
+            response.statusCode = 200;
+            response.setHeader('Content-type', 'application/json');
+            response.write(JSON.stringify(POST_RESPONSE));
+            response.end();
+        });
+
+    }
+    else {
+        response.statusCode = 401;
+        response.setHeader('Content-type', 'application/json');
+        response.write(JSON.stringify({error: 'Invalid login for checking. You provided: ' + username}));
+        response.end();
+    }
+}
+
 exports.start = start;
 exports.upload = upload;
 exports.show = show;
 
 exports.session = session;
 exports.articles = articles;
+
+exports.checkLogin = checkLogin;
+exports.register = register;
 
 exports.returnFile = returnFile;

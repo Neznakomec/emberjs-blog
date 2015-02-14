@@ -17,7 +17,9 @@ handle["/articles"] = requestHandlers.articles;
 handle["defaultFileHandler"] = requestHandlers.returnFile;
 
 handle["/articles.json"] = requestHandlers.articles;
-handle["/test"] = requestHandlers.test;
+
+handle["/checkLogin"] = requestHandlers.checkLogin;
+handle["/register"] = requestHandlers.register;
 server.start(router.route, handle);
 /*
 var http = require('http');

@@ -26,6 +26,7 @@
 
 <script type="text/x-handlebars" id="index">
     <h1>Welcome to my blog</h1>
+    {{outlet}}
 </script>
 
 <script type="text/x-handlebars" id="logout">
@@ -37,7 +38,7 @@
         <label for="loginOrEmail">Login or Email</label>
         {{view Ember.TextField valueBinding="loginOrEmail" placeholder="Login or Email"}}
         <label for="password">Password</label>
-        {{view Ember.TextField valueBinding="password" placeholder="Password"}}
+        {{view Ember.TextField valueBinding="password" type="password" placeholder="Password"}}
         <button >Login</button>
     {{#if errorMessage}}
     <div>{{errorMessage}}</div>
@@ -54,7 +55,7 @@
         </p>
         <p>
             <label for="password">Password</label>
-            {{view Ember.TextField valueBinding="password" placeholder="Password"}}
+            {{view Ember.TextField valueBinding="password" type="password" placeholder="Password"}}
         </p>
     {{#if errorMessage}}
     <div><font color="red"> {{errorMessage}}</font></div>
