@@ -95,6 +95,20 @@
     </div>
 </script>
 
+<script type="text/x-handlebars" id="articles/create">
+    hello!
+    <p>{{input type="text" value=title placeholder="please enter a title"}}</p>
+    <p>{{input type="text" value=excerpt placeholder="short introduction"}}</p>
+    <p>{{textarea valueBinding="body" placeholder="article"}}</p>
+    {{#if savedMessage}}
+    <p>{{savedMessage}}</p>
+    {{#link-to 'articles'}}Go back{{/link-to}}
+    {{else}}
+    <p>Posted by author: {{username}} </p>
+    <button {{action 'publish'}}>Publish Article</button>
+    {{/if}}
+</script>
+
 <script type="text/x-handlebars" id="article">
     <h1>{{title}}</h1>
     <h2>by {{author.name}} <small class='muted'>({{format-date date}})</small></h2>
@@ -102,12 +116,14 @@
     <hr>
 
     <div class='intro'>
-     {{!--{{format-markdown excerpt}}--}}
+        {{format-markdown excerpt}}
     </div>
 
     <div class='below-the-fold'>
-        {{!-- {{format-markdown body}}--}}
+        {{format-markdown body}}
     </div>
+
+    {{#link-to 'articles.index'}}Go Back{{/link-to}}
 </script>
 
 <script type="text/x-handlebars" id="stuff">

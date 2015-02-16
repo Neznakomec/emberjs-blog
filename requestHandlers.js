@@ -55,8 +55,8 @@ function articles(response, postData) {
     //var checkingToken = checkToken(response, postData);
 
     Article.find({}).find(function (err, results) {
-        var stringa = JSON.stringify(results);
-        console.log(stringa);
+        var stringedResult = JSON.stringify(results);
+        console.log(stringedResult);
         response.write(JSON.stringify(results));
         response.end();
     });
@@ -67,6 +67,39 @@ function articles(response, postData) {
             response.end();
         }
     }, null);*/
+}
+
+function addArticle(response, postData) {
+    var checkingToken = checkToken(response, postData);
+
+    checkingToken.then(function (result) {
+        if (result == true)
+        {
+            var article = querystring.parse(postData);
+            delete article.token;
+            delete article.account_id;
+            article.author = {name: article["author[name]"]};
+            delete article["author[name]"];
+
+            var newArticle = new Article(article);
+            newArticle.save(function (err, result) {
+                var responseMessage = new Object();
+
+                if (err) {
+                    responseMessage["success"] = false;
+                    responseMessage["message"] = err.message;
+                }
+                else
+                {
+                    responseMessage["success"] = true;
+                    responseMessage["message"] = "Article successfully save at ID " + result._id;
+                }
+
+                response.write(JSON.stringify(responseMessage));
+                response.end();
+            });
+        }
+    });
 }
 
 function upload(response, postData) {
@@ -361,6 +394,7 @@ exports.show = show;
 
 exports.session = session;
 exports.articles = articles;
+exports.addArticle = addArticle;
 
 exports.checkLogin = checkLogin;
 exports.register = register;

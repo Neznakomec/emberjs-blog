@@ -22,9 +22,10 @@ App.LogoutRoute = Ember.Route.extend({
             var self = this;
             //alert('logout fired');
             this.controller.set('logoutMessage', 'You have successfully logged out');
-            this.controllerFor('session.new').setProperties({token: '', account_id: ''});
+            this.controllerFor('session.new').setProperties({token: '', account_id: '', username: ''});
             localStorage.removeItem('token');
             localStorage.removeItem('account_id');
+            localStorage.removeItem('username');
 
             setTimeout(function () {
                 self.transitionTo('index');
@@ -39,12 +40,14 @@ App.SessionNewController = Ember.Controller.extend({
     //errorMessage: '',
     token: localStorage["token"],
     account_id: localStorage["account_id"],
+    username: localStorage["username"],
 
     tokenChanged: function () {
         localStorage["token"] = this.get('token');
         localStorage["account_id"] = this.get('account_id');
+        localStorage["username"] = this.get('username');
         this.controllerFor('application').set('isLogged', this.get('token') ? true: false);
-    }.observes('token', 'account_id'),
+    }.observes('token', 'account_id', 'username'),
 
     reset: function(){
         this.setProperties({
@@ -78,6 +81,7 @@ App.SessionNewRoute = Ember.Route.extend({
                         alert('login succeeded');
                         self.controller.set('token', data.session.auth_token);
                         self.controller.set('account_id', data.session.account_id);
+                        self.controller.set('username', self.controller.get('loginOrEmail'));
                         //localStorage["token"] = data.session.auth_token;
                         //localStorage["account_id"] = data.session.account_id;
                         var attemptedTransition = self.controller.get('attemptedTransition');
@@ -115,6 +119,17 @@ App.AuthenticatedRoute = Ember.Route.extend({
         return $.post(url, sessionProperties, null, 'json');
     },
 
+    postJSONWithToken: function (url, postObject) {
+        if (postObject == null || postObject == undefined)
+        {
+            alert('you given a null post object, please use postJSONWithToken(url)');
+        }
+        var loginController = this.controllerFor('session.new');
+        var sessionProperties = loginController.getProperties('token', 'account_id');
+        $.extend(sessionProperties, postObject);
+        return $.post(url, sessionProperties, null, 'json');
+    },
+
     beforeModel: function(transition) {
         if (!this.controllerFor('session.new').get('token')) {
             this.redirectToLogin(transition);
@@ -128,6 +143,16 @@ App.AuthenticatedRoute = Ember.Route.extend({
         loginController.set('attemptedTransition', transition);
         var tr = loginController.get('attemptedTransition');
         this.transitionTo('session.new');
+    },
+
+    getUsername: function()
+    {
+        if (localStorage["username"])
+        return localStorage["username"];
+        else
+        {
+            return this.controllerFor('session.new').get('username');
+        }
     }
 });
 
@@ -150,14 +175,15 @@ App.FreeAccessRoute = Ember.Route.extend({
 App.ArticlesRoute = App.FreeAccessRoute.extend({
     model: function() {
         // return this.getJSONWithToken('/articles.json');
-        return this.postJSONWithToken('/articles.json');
+        // return this.postJSONWithToken('/articles.json');
+        //blank model, add data loading in ArticlesIndex
     }
 
 });
 
 App.ArticlesIndexRoute = App.FreeAccessRoute.extend({
     model: function() {
-        return this.modelFor('articles');
+        return this.postJSONWithToken('/articles.json');
     }
 
 });
@@ -166,10 +192,41 @@ App.ArticleRoute = App.FreeAccessRoute.extend({
     model: function (params) {
         //articles.index is BROTHER for article_id router
         //so modelFor doesn't work
-        var articles = this.modelFor('articles');
+        var articles = this.modelFor('articles.index');
         if (articles) {
             if (articles[params.article_id - 1])
                 return articles[params.article_id - 1];
+        }
+    }
+});
+
+App.ArticlesCreateRoute = App.AuthenticatedRoute.extend({
+
+    setupController: function(controller, model) {
+        controller.set('model', model);
+        controller.set('username', this.getUsername());
+    },
+    actions:
+    {
+        publish: function() {
+            var self = this;
+            var article = new Object();
+            article["title"] = self.controller.get('title');
+            article["author"] = {name: self.getUsername()};
+            article["date"] = Date.now();
+            article["excerpt"] = this.controller.get('excerpt');
+            article["body"] = this.controller.get('body');
+            if (!article["excerpt"])
+            {
+                article.excerpt = article.body.substr(0, article.body.length / 3) + "...";
+            }
+
+            var articleAdding = this.postJSONWithToken('/addArticle', article);
+            
+            articleAdding.then(function (data) {
+                    self.controller.set('savedMessage', data.message);
+
+            });
         }
     }
 });
@@ -179,7 +236,6 @@ App.ArticleRoute = App.FreeAccessRoute.extend({
 App.RegisterController = Ember.Controller.extend({
     errorMessage: '',
     notifyMessage: '',
-    a : 0,
     reset: function () {
         this.setProperties({errorMessage: '', notifyMessage: ''});
         this.setProperties({loginOrEmail: '', password: ''});

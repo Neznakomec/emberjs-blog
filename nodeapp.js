@@ -13,10 +13,11 @@ handle["/upload"] = requestHandlers.upload;
 handle["/show"] = requestHandlers.show;
 
 handle["/session"] = requestHandlers.session;
-handle["/articles"] = requestHandlers.articles;
+//handle["/articles"] = requestHandlers.articles;
 handle["defaultFileHandler"] = requestHandlers.returnFile;
 
 handle["/articles.json"] = requestHandlers.articles;
+handle["/addArticle"] = requestHandlers.addArticle;
 
 handle["/checkLogin"] = requestHandlers.checkLogin;
 handle["/register"] = requestHandlers.register;
