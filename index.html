@@ -70,7 +70,7 @@
     <h1>Recent articles</h1>
 
     {{#each model}}
-    <h1>{{title}}</h1>
+    {{#link-to 'article' this._id}}<h1>{{title}}</h1>{{/link-to}}
     <h2>by {{author.name}} <small class='muted'>({{format-date date}})</small></h2>
 
     <hr>
@@ -83,9 +83,29 @@
         {{format-markdown body}}
     </div>
     {{/each}}
+
+    <div class="other">
+        x
+        {{outlet}}
+    </div>
 </script>
 
-<script id="bad" type="text/x-handlebars">
+<script type="text/x-handlebars" id="article">
+    <h1>{{title}}</h1>
+    <h2>by {{author.name}} <small class='muted'>({{format-date date}})</small></h2>
+
+    <hr>
+
+    <div class='intro'>
+        {{format-markdown excerpt}}
+    </div>
+
+    <div class='below-the-fold'>
+        {{format-markdown body}}
+    </div>
+</script>
+
+<script type="text/x-handlebars" id="stuff">
     <article>
     <h3>{{title}}</h3>
     <<p>Posted by {{author}}</p>

@@ -8,7 +8,7 @@ var async = require('async');
 mongoose.connection.on('open', function () {
 
     var db = mongoose.connection.db;
-    db.dropDatabase(function (err) {
+    db.collection('articles').drop(function (err) {
         if (err) throw err;
 
         async.parallel([

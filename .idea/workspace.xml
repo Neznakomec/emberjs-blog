@@ -2,16 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="06f94ac2-40fe-40f4-a565-a586232179e5" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/models/article.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/createArticles.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dictionaries/Ershov.xml" afterPath="$PROJECT_DIR$/.idea/dictionaries/Ershov.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/app.js" afterPath="$PROJECT_DIR$/js/app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/createArticles.js" afterPath="$PROJECT_DIR$/createArticles.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/createDb.js" afterPath="$PROJECT_DIR$/createDb.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/requestHandlers.js" afterPath="$PROJECT_DIR$/requestHandlers.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/router.js" afterPath="$PROJECT_DIR$/router.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/server.js" afterPath="$PROJECT_DIR$/server.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/models/user.js" afterPath="$PROJECT_DIR$/models/user.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="nodechat.iws" />
@@ -83,10 +82,23 @@
       <file leaf-file-name="createDb.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/createDb.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1071" max-vertical-offset="1683">
-              <caret line="64" column="22" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="23" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="867" max-vertical-offset="1683">
+              <caret line="64" column="32" selection-start-line="64" selection-start-column="32" selection-end-line="64" selection-end-column="32" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
+                <marker date="1424080415405" expanded="true" signature="1436:2426" placeholder="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="createArticles.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/createArticles.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="884">
+              <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
+              <folding>
+                <element signature="e#0#43#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -95,21 +107,9 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.70467836" vertical-offset="3873" max-vertical-offset="4471">
-              <caret line="242" column="13" selection-start-line="242" selection-start-column="13" selection-end-line="242" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.6198083" vertical-offset="2407" max-vertical-offset="4386">
+              <caret line="153" column="27" selection-start-line="153" selection-start-column="27" selection-end-line="153" selection-end-column="27" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="createArticles.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/createArticles.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="469" max-vertical-offset="884">
-              <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#43#0" expanded="false" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -117,8 +117,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-14.153846" vertical-offset="1298" max-vertical-offset="1853">
-              <caret line="98" column="32" selection-start-line="98" selection-start-column="32" selection-end-line="98" selection-end-column="32" />
+            <state vertical-scroll-proportion="-6.923077" vertical-offset="1299" max-vertical-offset="2193">
+              <caret line="87" column="9" selection-start-line="87" selection-start-column="9" selection-end-line="87" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -139,7 +139,6 @@
         <option value="$PROJECT_DIR$/dblibs/user.js" />
         <option value="$PROJECT_DIR$/dblibs/createDb.js" />
         <option value="$PROJECT_DIR$/dblibs/config.js" />
-        <option value="$PROJECT_DIR$/createDb.js" />
         <option value="$PROJECT_DIR$/server.js" />
         <option value="$PROJECT_DIR$/nodeapp.js" />
         <option value="$PROJECT_DIR$/models/counter.js" />
@@ -147,9 +146,10 @@
         <option value="$PROJECT_DIR$/models/article.js" />
         <option value="$PROJECT_DIR$/models/user.js" />
         <option value="$PROJECT_DIR$/requestHandlers.js" />
+        <option value="$PROJECT_DIR$/createArticles.js" />
+        <option value="$PROJECT_DIR$/createDb.js" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/js/app.js" />
-        <option value="$PROJECT_DIR$/createArticles.js" />
       </list>
     </option>
   </component>
@@ -185,6 +185,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -247,7 +248,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -259,7 +259,7 @@
     <property name="recentsLimit" value="5" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="FullScreen" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../authentication-part-1-master" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../bloggr-client-master" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
   </component>
   <component name="RecentsManager">
@@ -411,7 +411,13 @@
       <option name="project" value="LOCAL" />
       <updated>1423906791229</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="added 'Article' model, articles from db">
+      <created>1423948480573</created>
+      <option name="number" value="00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1423948480573</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -428,7 +434,6 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32676518" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39244664" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32840723" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -438,6 +443,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Thumbnails" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32840723" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -485,7 +491,8 @@
     <MESSAGE value="included db, user model, rewritten with promises" />
     <MESSAGE value="register : interface beginning" />
     <MESSAGE value="register : included auto increment on id field" />
-    <option name="LAST_COMMIT_MESSAGE" value="register : included auto increment on id field" />
+    <MESSAGE value="added 'Article' model, articles from db" />
+    <option name="LAST_COMMIT_MESSAGE" value="added 'Article' model, articles from db" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -494,16 +501,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/nodeapp.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="289" max-vertical-offset="1326">
-          <caret line="19" column="11" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#43#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/server.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="379" max-vertical-offset="833">
@@ -536,6 +533,7 @@
           <caret line="58" column="0" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="39" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
+            <marker date="1424080415405" expanded="true" signature="1436:2426" placeholder="{...}" />
           </folding>
         </state>
       </provider>
@@ -544,7 +542,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="695" max-vertical-offset="1037">
           <caret line="51" column="1" selection-start-line="51" selection-start-column="1" selection-end-line="51" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -834,7 +831,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="867" max-vertical-offset="1428">
           <caret line="68" column="0" selection-start-line="68" selection-start-column="0" selection-end-line="68" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -842,19 +838,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="969" max-vertical-offset="1479">
           <caret line="73" column="0" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#43#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/createDb.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1275" max-vertical-offset="1683">
-          <caret line="64" column="22" selection-start-line="64" selection-start-column="22" selection-end-line="64" selection-end-column="23" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -862,7 +845,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="53747" max-vertical-offset="166311">
           <caret line="3180" column="12" selection-start-line="3180" selection-start-column="12" selection-end-line="3180" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -878,32 +860,50 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33274648" vertical-offset="21146" max-vertical-offset="28288">
           <caret line="1259" column="8" selection-start-line="1259" selection-start-column="8" selection-end-line="1259" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/mongodb/lib/mongodb/mongo_client.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1919" max-vertical-offset="8279">
+          <caret line="124" column="22" selection-start-line="124" selection-start-column="22" selection-end-line="124" selection-end-column="22" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="file://$PROJECT_DIR$/createDb.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.153846" vertical-offset="1298" max-vertical-offset="1853">
-          <caret line="98" column="32" selection-start-line="98" selection-start-column="32" selection-end-line="98" selection-end-column="32" />
-          <folding />
+        <state vertical-scroll-proportion="0.0" vertical-offset="867" max-vertical-offset="1683">
+          <caret line="64" column="32" selection-start-line="64" selection-start-column="32" selection-end-line="64" selection-end-column="32" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <marker date="1424080415405" expanded="true" signature="1436:2426" placeholder="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/createArticles.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="469" max-vertical-offset="884">
-          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="884">
+          <caret line="10" column="35" selection-start-line="10" selection-start-column="35" selection-end-line="10" selection-end-column="35" />
           <folding>
             <element signature="e#0#43#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.923077" vertical-offset="1299" max-vertical-offset="2193">
+          <caret line="87" column="9" selection-start-line="87" selection-start-column="9" selection-end-line="87" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.70467836" vertical-offset="3873" max-vertical-offset="4471">
-          <caret line="242" column="13" selection-start-line="242" selection-start-column="13" selection-end-line="242" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.6198083" vertical-offset="2407" max-vertical-offset="4386">
+          <caret line="153" column="27" selection-start-line="153" selection-start-column="27" selection-end-line="153" selection-end-column="27" />
           <folding />
         </state>
       </provider>

@@ -5,7 +5,11 @@ App.Router.map(function() {
     this.resource('session', {path: '/session'}, function () {
         this.route('new', {path: '/new'});
     });
-    this.route('articles', {path: '/articles'});
+    //this.route('articles', {path: '/articles'});
+    this.resource('articles', function(){
+       this.resource('article', {path: ':article_id'});
+    });
+
     this.route('register', {path: '/register'});
     this.route('logout', {path: '/logout'});
 });
@@ -138,6 +142,18 @@ App.ArticlesRoute = App.AuthenticatedRoute.extend({
         // return this.getJSONWithToken('/articles.json');
         return this.postJSONWithToken('/articles.json');
     }
+
+});
+
+App.ArticleRoute = App.AuthenticatedRoute.extend({
+    model: function (params) {
+        var articles = this.modelFor('articles');
+        if (articles)
+        {
+            if (articles[params.article_id - 1])
+            return articles[params.article_id - 1];
+        }
+    }
 });
 
 // Register route
@@ -207,21 +223,6 @@ App.RegisterController = Ember.Controller.extend({
             {
                 this.printError('login field is empty. please enter something');
             }
-/*
-            var a = this.get('a');
-            if (a == 0)
-            {
-                this.set('errorMessage', 'waka a=' + this.get('a'));
-                this.set('notifyMessage', '');
-            }
-
-            if (a == 1)
-            {
-                this.set('errorMessage', '');
-                this.set('notifyMessage', 'stack a=' + this.get('a'));
-            }
-
-            this.set('a', 1 - a);*/
         }
     }
 });
@@ -235,15 +236,9 @@ App.RegisterRoute = Ember.Route.extend({
 App.IndexRoute = App.AuthenticatedRoute.extend({
     model: function () {
         return this.postJSONWithToken('/articles.json');
-        /*.done(function(data){
-            alert('response received');
-            alert(data);
-            console.log(data);
-            return data;
-        });*/
     },
     renderTemplate: function () {
-        this.render('articles');
+       this.render('articles');
     }
 });
 
