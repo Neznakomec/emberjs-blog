@@ -14,6 +14,9 @@
                 <a class="brand" href="#">My blog</a>
                 <ul class="nav pull-right">
                     <li>{{#link-to 'articles'}}Blog Articles{{/link-to}}</li>
+                    {{#if isLogged}}
+                    <li>{{#link-to 'articles.create'}}New article{{/link-to}}</li>
+                    {{/if}}
                     <li>{{#link-to 'session.new'}}Login{{/link-to}} {{#link-to 'register'}}Register{{/link-to}}</li>
                     <li>{{#link-to 'logout'}}Logout{{/link-to}}</li>
                 </ul>
@@ -67,26 +70,28 @@
 </script>
 
 <script type="text/x-handlebars" id="articles">
+    {{outlet}}
+</script>
+
+<script type="text/x-handlebars" id="articles/index">
     <h1>Recent articles</h1>
 
-    {{#each model}}
-    {{#link-to 'article' this._id}}<h1>{{title}}</h1>{{/link-to}}
-    <h2>by {{author.name}} <small class='muted'>({{format-date date}})</small></h2>
+    {{#each item in model}}
+    {{#link-to 'article' item._id}}<h1>{{item.title}}</h1>{{/link-to}}
+    <h2>by {{item.author.name}} <small class='muted'>({{format-date item.date}})</small></h2>
 
     <hr>
 
     <div class='intro'>
-        {{format-markdown excerpt}}
+        {{format-markdown item.excerpt}}
     </div>
 
     <div class='below-the-fold'>
-        {{format-markdown body}}
+        {{format-markdown item.body}}
     </div>
     {{/each}}
 
     <div class="other">
-        x
-        {{outlet}}
     </div>
 </script>
 
@@ -97,11 +102,11 @@
     <hr>
 
     <div class='intro'>
-        {{format-markdown excerpt}}
+     {{!--{{format-markdown excerpt}}--}}
     </div>
 
     <div class='below-the-fold'>
-        {{format-markdown body}}
+        {{!-- {{format-markdown body}}--}}
     </div>
 </script>
 

@@ -6,8 +6,9 @@ App.Router.map(function() {
         this.route('new', {path: '/new'});
     });
     //this.route('articles', {path: '/articles'});
-    this.resource('articles', function(){
+    this.resource('articles', {path: '/articles'} ,function(){
        this.resource('article', {path: ':article_id'});
+        this.route('create', {path: 'create'});
     });
 
     this.route('register', {path: '/register'});
@@ -42,8 +43,8 @@ App.SessionNewController = Ember.Controller.extend({
     tokenChanged: function () {
         localStorage["token"] = this.get('token');
         localStorage["account_id"] = this.get('account_id');
+        this.controllerFor('application').set('isLogged', this.get('token') ? true: false);
     }.observes('token', 'account_id'),
-
 
     reset: function(){
         this.setProperties({
@@ -51,13 +52,6 @@ App.SessionNewController = Ember.Controller.extend({
             password: "",
             errorMessage: ""
         })
-    },
-
-    events:
-    {
-        error: function(reason, transition) {
-            alert('eeerrooorrr');
-        }
     }
 });
 
@@ -137,7 +131,23 @@ App.AuthenticatedRoute = Ember.Route.extend({
     }
 });
 
-App.ArticlesRoute = App.AuthenticatedRoute.extend({
+// version that don't need a login
+App.FreeAccessRoute = Ember.Route.extend({
+    getJSONWithToken: function (url) {
+        var token = this.controllerFor('session.new').get('token');
+        var userId = this.controllerFor('session.new').get('account_id');
+        return $.getJSON(url, {token: token, uid: userId});
+    },
+
+    postJSONWithToken: function (url) {
+        var loginController = this.controllerFor('session.new');
+        var sessionProperties = loginController.getProperties('token', 'account_id');
+        return $.post(url, sessionProperties, null, 'json');
+    }
+});
+//
+
+App.ArticlesRoute = App.FreeAccessRoute.extend({
     model: function() {
         // return this.getJSONWithToken('/articles.json');
         return this.postJSONWithToken('/articles.json');
@@ -145,13 +155,21 @@ App.ArticlesRoute = App.AuthenticatedRoute.extend({
 
 });
 
-App.ArticleRoute = App.AuthenticatedRoute.extend({
+App.ArticlesIndexRoute = App.FreeAccessRoute.extend({
+    model: function() {
+        return this.modelFor('articles');
+    }
+
+});
+
+App.ArticleRoute = App.FreeAccessRoute.extend({
     model: function (params) {
+        //articles.index is BROTHER for article_id router
+        //so modelFor doesn't work
         var articles = this.modelFor('articles');
-        if (articles)
-        {
+        if (articles) {
             if (articles[params.article_id - 1])
-            return articles[params.article_id - 1];
+                return articles[params.article_id - 1];
         }
     }
 });
@@ -233,13 +251,18 @@ App.RegisterRoute = Ember.Route.extend({
     }
 });
 
-App.IndexRoute = App.AuthenticatedRoute.extend({
+App.IndexRoute = App.FreeAccessRoute.extend({
     model: function () {
         return this.postJSONWithToken('/articles.json');
     },
+
     renderTemplate: function () {
        this.render('articles');
     }
+});
+
+App.ApplicationController = Ember.Controller.extend({
+    isLogged: localStorage["token"]
 });
 
 var showdown = new Showdown.converter();
