@@ -21,6 +21,14 @@ If you have different address, please change it in
 <pre> /dblibs/config.js</pre>
 
 # Implementation process
+
+<pre>
+Many people getting started with Ember find that they have somewhat of a hurdle
+to jump before they start reaping the productivity benefits that come with the framework,
+since Ember provides abstractions on top of the most common existing JavaScript patterns.
+</pre>
+
+[A note][notice]
 - 1) At first was done an authentification mechanism
 In searching how to do this, I found a [Simplabs blog][simplabs], where was something about these topic.
 
@@ -50,3 +58,4 @@ Then I switched users to DB - used Mongoose, written a "User" model.
 [nodebeginner]:      http://nodebeginner.ru/
 [mongocasts]:         http://learn.javascript.ru/nodejs-screencast
 [autoplugin]: https://www.npmjs.com/package/mongoose-auto-increment
+[notice]: https://www.airpair.com/javascript/emberjs-using-ember-cli#1-3-the-ember-js-learning-curve
