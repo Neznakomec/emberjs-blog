@@ -6,6 +6,8 @@ App.Router.map(function() {
     this.resource('session', {path: '/session'}, function () {
         this.route('new', {path: '/new'});
     });
+    this.route('index', {path: '/'}, function () {
+
     this.resource('articles', {path: '/articles'} ,function(){
        this.resource('article', {path: ':article_id'}, function () {
            this.resource('comment', {path: '/comment'});
@@ -13,6 +15,7 @@ App.Router.map(function() {
         this.route('create', {path: 'create'});
     });
 
+    });
 
     this.route('register', {path: '/register'});
     this.route('logout', {path: '/logout'});
@@ -361,14 +364,27 @@ App.RegisterRoute = Ember.Route.extend({
 // Main page related routes
 // isLogged for showing pages needed auth
 
+/*
+topic about rendering template in template
+ http://stackoverflow.com/questions/25711570/ember-js-rendering-template-in-other-template-not-fetching-model
+ http://jsbin.com/yotinemubinu/4/edit?html,js,output
+ */
 App.IndexRoute = App.FreeAccessRoute.extend({
-    needs: "application",
     model: function () {
         return this.postJSONWithToken('/articles.json');
     },
 
-    renderTemplate: function () {
-       this.render('articles.index');
+    /*renderTemplate: function () {
+       this.render('articles.index',
+           {into: 'index'});
+    }*/
+    renderTemplate: function(controller, model) {
+        console.log(this.modelFor('articles'));
+        this.render('index');
+        this.render('articles.index', {
+            into: 'index',
+            outlet: 'arts'
+        });
     }
 });
 
