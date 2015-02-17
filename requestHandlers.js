@@ -28,31 +28,9 @@ var ARTICLES = [
     }
 ];
 
-function start(response, postData) {
-    console.log("Request handler 'start' was called.");
-
-    var body = '<html>'+
-        '<head>'+
-        '<meta http-equiv="Content-Type" '+
-        'content="text/html; charset=UTF-8" />'+
-        '</head>'+
-        '<body>'+
-        '<form action="/upload" enctype="multipart/form-data" '+
-        'method="post">'+
-        '<input type="file" name="upload"><br>'+
-        '<input type="submit" value="Upload file" />'+
-        '</form>'+
-        '</body>'+
-        '</html>';
-
-    response.writeHead(200, {"Content-Type": "text/html"});
-    response.write(body);
-    response.end();
-}
 var Article = require('models/article').Article;
 
 function articles(response, postData) {
-    //var checkingToken = checkToken(response, postData);
 
     Article.find({}).find(function (err, results) {
         var stringedResult = JSON.stringify(results);
@@ -60,13 +38,6 @@ function articles(response, postData) {
         response.write(JSON.stringify(results));
         response.end();
     });
-    /*checkingToken.then(function (result) {
-        if (result == true)
-        {
-            response.write(JSON.stringify(ARTICLES));
-            response.end();
-        }
-    }, null);*/
 }
 
 function addArticle(response, postData) {
@@ -148,35 +119,6 @@ function addComment(response, postData) {
     });
 }
 
-function upload(response, postData) {
-    console.log("Request handler 'upload' was called.");
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write("You've sent the text: "+
-    querystring.parse(postData).text );
-    response.end();
-}
-
-function show(response, postData) {
-    console.log("Request handler 'show' was called.");
-    fs.readFile("./test.png", "binary", function(error, file)
-    {
-        if(error)
-        {
-            response.writeHead(500, {"Content-Type": "text/plain"});
-            response.write(error + "\n");
-            response.end();
-        }
-        else
-        {
-            response.writeHead(200, {"Content-Type": "image/png"});
-            response.write(file, "binary");
-            response.end();
-        }
-    });
-}
-
-
-//var mongoose = require('dblibs/mongoose');
 var User = require('models/user').User;
 
 function getTokenForUsername(username) {
@@ -329,22 +271,6 @@ function session(response, postData) {
     }, null);
 }
 
-function returnFile(pathname, response, postData) {
-    console.log("Request for a file " + pathname);
-    if (pathname == '/') pathname = 'index.html';
-    else pathname = __dirname + pathname;
-
-    info = fs.readFile(pathname, function(err, info){ // callback function
-        if (err){
-            console.error(err);
-            response.statusCode = 500;
-            response.end("На сервере произошла ошибка");
-            return;
-        }
-        response.end(info);
-    });
-}
-
 function checkLogin(response, postData)
 {
     var Login = querystring.parse(postData);
@@ -434,9 +360,24 @@ function register(response, postData)
     }
 }
 
-exports.start = start;
-exports.upload = upload;
-exports.show = show;
+
+
+
+function returnFile(pathname, response, postData) {
+    console.log("Request for a file " + pathname);
+    if (pathname == '/') pathname = 'index.html';
+    else pathname = __dirname + pathname;
+
+    info = fs.readFile(pathname, function(err, info){ // callback function
+        if (err){
+            console.error(err);
+            response.statusCode = 500;
+            response.end("На сервере произошла ошибка");
+            return;
+        }
+        response.end(info);
+    });
+}
 
 exports.session = session;
 exports.articles = articles;

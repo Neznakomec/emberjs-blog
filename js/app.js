@@ -374,10 +374,6 @@ App.IndexRoute = App.FreeAccessRoute.extend({
         return this.postJSONWithToken('/articles.json');
     },
 
-    /*renderTemplate: function () {
-       this.render('articles.index',
-           {into: 'index'});
-    }*/
     renderTemplate: function(controller, model) {
         console.log(this.modelFor('articles'));
         this.render('index');
