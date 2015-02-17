@@ -1,3 +1,4 @@
+// App = Ember.Application.create(); //noisy Webstorm
 App = Ember.Application.create();
 
 App.Router.map(function() {
@@ -5,11 +6,13 @@ App.Router.map(function() {
     this.resource('session', {path: '/session'}, function () {
         this.route('new', {path: '/new'});
     });
-    //this.route('articles', {path: '/articles'});
     this.resource('articles', {path: '/articles'} ,function(){
-       this.resource('article', {path: ':article_id'});
+       this.resource('article', {path: ':article_id'}, function () {
+           this.resource('comment', {path: '/comment'});
+       });
         this.route('create', {path: 'create'});
     });
+
 
     this.route('register', {path: '/register'});
     this.route('logout', {path: '/logout'});
@@ -170,20 +173,21 @@ App.FreeAccessRoute = Ember.Route.extend({
         return $.post(url, sessionProperties, null, 'json');
     }
 });
-//
+
+//ARTICLES
 
 App.ArticlesRoute = App.FreeAccessRoute.extend({
     model: function() {
         // return this.getJSONWithToken('/articles.json');
-        // return this.postJSONWithToken('/articles.json');
-        //blank model, add data loading in ArticlesIndex
+        return this.postJSONWithToken('/articles.json');
     }
 
 });
 
 App.ArticlesIndexRoute = App.FreeAccessRoute.extend({
     model: function() {
-        return this.postJSONWithToken('/articles.json');
+        // return this.postJSONWithToken('/articles.json');
+        return this.modelFor('articles');
     }
 
 });
@@ -192,11 +196,18 @@ App.ArticleRoute = App.FreeAccessRoute.extend({
     model: function (params) {
         //articles.index is BROTHER for article_id router
         //so modelFor doesn't work
-        var articles = this.modelFor('articles.index');
+        var articles = this.modelFor('articles');
         if (articles) {
             if (articles[params.article_id - 1])
+            {
+                this.set('params', params);
                 return articles[params.article_id - 1];
+            }
         }
+    },
+    setupController: function(controller, model) {
+        this._super(controller, model);
+        controller.set('params', this.get('params'));
     }
 });
 
@@ -211,9 +222,10 @@ App.ArticlesCreateRoute = App.AuthenticatedRoute.extend({
         publish: function() {
             var self = this;
             var article = new Object();
+
             article["title"] = self.controller.get('title');
             article["author"] = {name: self.getUsername()};
-            article["date"] = Date.now();
+            // article["date"] = Date.now();
             article["excerpt"] = this.controller.get('excerpt');
             article["body"] = this.controller.get('body');
             if (!article["excerpt"])
@@ -226,6 +238,45 @@ App.ArticlesCreateRoute = App.AuthenticatedRoute.extend({
             articleAdding.then(function (data) {
                     self.controller.set('savedMessage', data.message);
 
+            });
+        }
+    }
+});
+
+App.CommentController = Ember.ArrayController.extend({
+    needs: "article",
+    reset: function () {
+       this.set('commentBody', '');
+    }
+});
+
+App.CommentRoute = App.AuthenticatedRoute.extend({
+    setupController: function (controller, model) {
+        controller.reset();
+        this._super(controller, model); // ??
+    },
+    model: function(){
+        var self = this;
+        var comment = new Object();
+        var id = this.modelFor('article')._id;
+        comment["articleId"] = id;
+
+        return this.postJSONWithToken('/comments.json', comment);
+    },
+    actions: {
+        publish: function () {
+            var self = this;
+            var comment = new Object();
+            var id = self.controller.get('controllers.article.params.article_id');
+            comment["articleId"] = id;
+            comment["body"] = self.controller.get('commentBody');
+            comment["author"] = {name: self.getUsername()};
+            // comment["date"] = Date.now();
+
+            var commentAdding = this.postJSONWithToken('/addComment', comment);
+
+            commentAdding.then(function (data) {
+                self.controller.set('savedMessage', data.message);
             });
         }
     }
@@ -307,18 +358,22 @@ App.RegisterRoute = Ember.Route.extend({
     }
 });
 
+// Main page related routes
+// isLogged for showing pages needed auth
+
 App.IndexRoute = App.FreeAccessRoute.extend({
+    needs: "application",
     model: function () {
         return this.postJSONWithToken('/articles.json');
     },
 
     renderTemplate: function () {
-       this.render('articles');
+       this.render('articles.index');
     }
 });
 
 App.ApplicationController = Ember.Controller.extend({
-    isLogged: localStorage["token"]
+    isLogged: localStorage["token"] ? true : false
 });
 
 var showdown = new Showdown.converter();
@@ -329,4 +384,8 @@ Ember.Handlebars.helper('format-markdown', function(input) {
 
 Ember.Handlebars.helper('format-date', function(date) {
     return moment(date).fromNow();
+});
+
+Ember.Handlebars.helper('format-date-std', function(date) {
+    return moment(date).format('MMMM Do YYYY, h:mm:ss a');
 });

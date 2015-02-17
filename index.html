@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        {{outlet}}
+     {{outlet}}
     </div>
 </script>
 
@@ -112,9 +112,7 @@
 <script type="text/x-handlebars" id="article">
     <h1>{{title}}</h1>
     <h2>by {{author.name}} <small class='muted'>({{format-date date}})</small></h2>
-
     <hr>
-
     <div class='intro'>
         {{format-markdown excerpt}}
     </div>
@@ -123,7 +121,26 @@
         {{format-markdown body}}
     </div>
 
+    <div class="comments">
+        {{#link-to 'comment'}}Commentaries:{{/link-to}}
+        <p>{{outlet}}</p>
+    </div>
     {{#link-to 'articles.index'}}Go Back{{/link-to}}
+</script>
+
+<script type="text/x-handlebars" id="comment">
+    <table>
+        {{#each item in model}}
+        <tr>
+            <p>{{item.body}}</p>
+            <h3>by {{item.author.name}} <small class='muted'>({{format-date-std item.date}})</small></h3>
+            <hr>
+        </tr>
+        {{/each}}
+    </table>
+
+    <p>{{textarea type="text" valueBinding="commentBody" placeholder="Write your opinion..."}}</p>
+    <button {{action 'publish'}}>Write a comment</button>
 </script>
 
 <script type="text/x-handlebars" id="stuff">

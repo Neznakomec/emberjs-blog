@@ -4,7 +4,9 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "MD5": "*"
+    "MD5": "*",
+    "async": "*",
+    "mongodb": "*"
   },
   "devDependencies": {
   }

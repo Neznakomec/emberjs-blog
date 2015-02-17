@@ -1,5 +1,5 @@
 /**
- * Created by Ershov on 14.02.2015.
+ * Created by Ershov on 16.02.2015.
  */
 var mongoose = require('dblibs/mongoose');
 var autoIncrement = require('mongoose-auto-increment');
@@ -12,19 +12,15 @@ var schema = new Schema({
         type: Number,
         unique: true
     },
-    title: {
-        type: String,
+    articleId: {
+        type: Number,
         required: true
     },
     author: {
         name: {
-        type: String,
-        required: true
+            type: String,
+            required: true
         }
-    },
-    excerpt: {
-        type: String,
-        required: true
     },
     body: {
         type: String,
@@ -36,26 +32,26 @@ var schema = new Schema({
     }
 });
 
-exports.Article = mongoose.model('Article', schema);
-var Article = exports.Article;
+exports.Comment = mongoose.model('Comment', schema);
+var Comment = exports.Comment;
 
 // auto increment plugin
 //
-Article.findOne().sort('-_id').exec(function(err, item) {
-    var nextArticleNumber;
+Comment.findOne().sort('-_id').exec(function(err, item) {
+    var nextCommentNumber;
     if (item == null) {
-        nextArticleNumber = 1;
+        nextCommentNumber = 1;
     }
     else {
-        nextArticleNumber = item._id + 1;
+        nextCommentNumber = item._id + 1;
     }
 
-    console.log('Article create starting id at ' + nextArticleNumber);
+    console.log('Comment create starting id at ' + nextCommentNumber);
 
     schema.plugin(autoIncrement.plugin, {
-        model: 'Article',
+        model: 'Comment',
         field: '_id',
-        startAt: nextArticleNumber,
+        startAt: nextCommentNumber,
         incrementBy: 1
     });
 

@@ -19,6 +19,9 @@ handle["defaultFileHandler"] = requestHandlers.returnFile;
 handle["/articles.json"] = requestHandlers.articles;
 handle["/addArticle"] = requestHandlers.addArticle;
 
+handle["/comments.json"] = requestHandlers.comments;
+handle["/addComment"] = requestHandlers.addComment;
+
 handle["/checkLogin"] = requestHandlers.checkLogin;
 handle["/register"] = requestHandlers.register;
 server.start(router.route, handle);

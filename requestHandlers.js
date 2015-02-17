@@ -102,6 +102,52 @@ function addArticle(response, postData) {
     });
 }
 
+var Comment = require('models/comment').Comment;
+
+function comments(response, postData) {
+    var comment = querystring.parse(postData);
+
+    Comment.find({articleId: comment.articleId}).find(function (err, results) {
+        var stringedResult = JSON.stringify(results);
+        console.log(stringedResult);
+        response.write(JSON.stringify(results));
+        response.end();
+    });
+}
+
+function addComment(response, postData) {
+    var checkingToken = checkToken(response, postData);
+
+    checkingToken.then(function (result) {
+        if (result == true)
+        {
+            var comment = querystring.parse(postData);
+            delete comment.token;
+            delete comment.account_id;
+            comment.author = {name: comment["author[name]"]};
+            delete comment["author[name]"];
+
+            var newComment = new Comment(comment);
+            newComment.save(function (err, result) {
+                var responseMessage = new Object();
+
+                if (err) {
+                    responseMessage["success"] = false;
+                    responseMessage["message"] = err.message;
+                }
+                else
+                {
+                    responseMessage["success"] = true;
+                    responseMessage["message"] = "Comment successfully save at ID " + result._id;
+                }
+
+                response.write(JSON.stringify(responseMessage));
+                response.end();
+            });
+        }
+    });
+}
+
 function upload(response, postData) {
     console.log("Request handler 'upload' was called.");
     response.writeHead(200, {"Content-Type": "text/plain"});
@@ -395,6 +441,9 @@ exports.show = show;
 exports.session = session;
 exports.articles = articles;
 exports.addArticle = addArticle;
+
+exports.comments = comments;
+exports.addComment = addComment;
 
 exports.checkLogin = checkLogin;
 exports.register = register;
