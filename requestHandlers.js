@@ -34,7 +34,6 @@ function articles(response, postData) {
 
     Article.find({}).find(function (err, results) {
         var stringedResult = JSON.stringify(results);
-        console.log(stringedResult);
         response.write(JSON.stringify(results));
         response.end();
     });
@@ -365,8 +364,8 @@ function register(response, postData)
 
 function returnFile(pathname, response, postData) {
     console.log("Request for a file " + pathname);
-    if (pathname == '/') pathname = 'index.html';
-    else pathname = __dirname + pathname;
+    if (pathname == '/') pathname = __dirname + '/public/' + 'index.html';
+    else pathname = __dirname + '/public/' + pathname;
 
     info = fs.readFile(pathname, function(err, info){ // callback function
         if (err){
